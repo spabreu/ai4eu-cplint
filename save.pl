@@ -19,7 +19,7 @@
 %
 % Environment variables: ------------------------------------------------------
 %
-% SAVE_DIR
+% SAVEDIR
 %   where to put the saved states and links.
 %
 % @author Salvador Abreu <spa@debian.org>
@@ -59,10 +59,11 @@ save(BASE) :-
     qsave_program(PATH, OPTS),
     ( exists_file(BASE_S) -> true ; link_file(FILE_LATEST, BASE_S, symbolic) ),
     ( exists_file(LATEST) -> rename_file(LATEST, PREVIOUS) ; true ),
-    link_file(FILE, LATEST, symbolic).
+    link_file(FILE, LATEST, symbolic),
+    write('saved '), message.
 
 
-save_dir(DIR) :- getenv('SAVE_DIR', DIR), !.
+save_dir(DIR) :- getenv('SAVEDIR', DIR), !.
 save_dir('/data').
 
 

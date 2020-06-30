@@ -1,0 +1,18 @@
+OPEN:
+
+- images logtalk etc. (with executable built by save/1) don't seem to
+  have terminal completion.  Clues: prolog_flag(tty_control),
+  --{no-}tty command line flag.
+
+CLOSED:
+
+- cplint image doesn't have shared libraries linked.
+  FIX: in save.pl, use 'foreign(save)'.
+
+- logtalk introduces op(200, fy, (?)), which is not digested by
+  cplint.  Workaround: undefine before loading cplint, redefine after
+  (being used in cplint container).  Needs better fix.
+
+- need to connect local directory to /root/data in logtalk and cplint
+  containers.
+
