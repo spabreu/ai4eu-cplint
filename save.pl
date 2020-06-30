@@ -1,10 +1,10 @@
-% -- save.pl ------------------------------------------------------------------
+% == save.pl ==================================================================
 %
 % Save the Prolog state so it may be restarted "as is".
 %
-% Usage:
+% Usage: ----------------------------------------------------------------------
 %
-% save(NAME)
+% save(+NAME)
 %   saves the current state as NAME in the BASE directory, with a
 %   history of past versions.  Example values for NAME include 'prolog',
 %   'cplint', 'logtalk', ...
@@ -16,15 +16,14 @@
 % state, with the date&time appended.  Additionally there are symbolic
 % links of the form NAME-LATEST, NAME-PREVIOUS and just NAME, to the
 % appropriate saved state file.
-/**
- * Save state to a "reasonable" file.
- *
- * SAVE_DIR
- *   where to put the saved states and links.
- *
- * @author Salvador Abreu <spa@debian.org>
- * @license GPLv3
- */
+%
+% Environment variables: ------------------------------------------------------
+%
+% SAVE_DIR
+%   where to put the saved states and links.
+%
+% @author Salvador Abreu <spa@debian.org>
+% @license GPLv3
 
 :- module(save, [save/0, save/1]).
 
@@ -42,12 +41,17 @@ save(BASE) :-
     asserta(prog(BASE)),
     time_stamp(TIME),
     file_name(BASE, TIME, FILE),
-    file_name(BASE, 'LATEST', FILE_LATEST),
-    file_name(BASE, 'PREVIOUS', FILE_PREVIOUS),
+    file_name(BASE, '-LATEST', FILE_LATEST),
+    file_name(BASE, '-PREVIOUS', FILE_PREVIOUS),
+%   file_name(FILE, '.log', FILE_L),
     save_dir(DIR),
     full_path(DIR, FILE, PATH),
     full_path(DIR, BASE, BASE_S),
-    OPTS = [ goal(( message, args, prolog)), verbose(false) ],
+%   full_path(DIR, FILE_L, FILE_LOG),
+    OPTS = [ goal(( message, args, prolog)),
+	     foreign(save),	% retain foreign libs in saved state
+%	     map(FILE_LOG),	% debug information
+	     verbose(false) ],
     full_path(DIR, FILE_LATEST, LATEST),
     full_path(DIR, FILE_PREVIOUS, PREVIOUS),
     retractall(saved(_)),
@@ -68,12 +72,12 @@ time_stamp(STAMP) :-
     NOW=date(YYYY, MM, DD, H, M, SS, _, _, _),
     S is floor(SS),
     T is 10000*H + 100*M + S,
-    format_to_chars('~|~`0t~d~4+.~`0t~d~3+.~`0t~d~3+-~`0t~d~7+',
+    format_to_chars('-~|~`0t~d~4+.~`0t~d~3+.~`0t~d~3+-~`0t~d~7+',
 		    [YYYY, MM, DD, T], STAMPS),
     name(STAMP, STAMPS).
     
 file_name(BASE, STAMP, FILE) :-
-    format_to_chars('~w-~w', [BASE, STAMP], FILES),
+    format_to_chars('~w~w', [BASE, STAMP], FILES),
     name(FILE, FILES).
 
 full_path(DIR, FILE, PATH) :-
