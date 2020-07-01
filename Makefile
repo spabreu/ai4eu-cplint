@@ -4,6 +4,7 @@ LGTVERS=3.39.0-1
 LGTDEB=logtalk_$(LGTVERS)_all.deb
 DATA=data
 WORKDIR=/root
+HUBU=rodalvas
 
 all: cplint
 
@@ -11,15 +12,18 @@ all: cplint
 
 prolog:
 	docker build $@ --tag $@:latest
+	docker tag $@:latest $(HUBU)/$@:latest
 
 logtalk: logtalk.deb prolog
 	cp logtalk.deb $@
 	cp save.pl $@
 	docker build $@ --tag $@:latest
+	docker tag $@:latest $(HUBU)/$@:latest
 
 cplint: logtalk
 	cp save.pl $@
 	docker build $@ --tag $@:latest
+	docker tag $@:latest $(HUBU)/$@:latest
 
 run-%::
 	docker run -ti \
