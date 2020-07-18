@@ -36,6 +36,7 @@ logtalk.deb::
 
 clean:
 	rm -f $(DATA)/*
+	rm -f */save.pl $(LGTDEB) logtalk.deb logtalk/logtalk.deb
 	docker container prune -f
 	docker image prune -f
 	docker image rm -f $(IMAGES)
