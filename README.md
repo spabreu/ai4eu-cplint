@@ -69,6 +69,92 @@ follows:
 Calling save/0 after having called save/1 will default to using the
 same name as previously used with save/1.
 
+# Example session
+
+1. Make the cplint image:
+
+		15:52:37$ make cplint
+		[ -e logtalk_3.39.0-1_all.deb ] || wget -q https://logtalk.org/files/logtalk_3.39.0-1_all.deb
+		ln -sf logtalk_3.39.0-1_all.deb logtalk.deb
+		docker build prolog --tag prolog:latest
+		Sending build context to Docker daemon  2.048kB
+		Step 1/3 : FROM debian:bullseye-slim
+		bullseye-slim: Pulling from library/debian
+		bbd74bee8c69: Pull complete 
+			...
+		Removing intermediate container 95a37fe946d3
+		---> 9faebe81644c
+		Successfully built 9faebe81644c
+		Successfully tagged cplint:latest
+		docker tag cplint:latest rodalvas/cplint:latest
+		15:53:53$ 
+
+2. Run it and do something:
+
+		15:55:45$ docker run -ti -v $PWD/data:/root/data cplint 
+		docker.cplint version 0.1 (cplint-2020.07.18-145351)
+		?- p(X).
+		ERROR: Unknown procedure: p/1 (DWIM could not correct goal)
+		?- [user].
+		|: p(1).
+		|: p(2).
+		|: 
+		% user://1 compiled 0.00 sec, 2 clauses
+		true.
+
+		?- p(X).
+		X = 1 ;
+		X = 2.
+
+		?- save.
+		% Disabled autoloading (loaded 0 files)
+		saved docker.cplint version 0.1 (cplint-2020.07.18-145623)
+		true.
+
+		?- 
+
+		15:56:26$ 
+
+3. Resume the session, from we left off:
+
+		15:58:13$ docker run -ti -v $PWD/data:/root/data cplint 
+		docker.cplint version 0.1 (cplint-2020.07.18-145623)
+		?- p(X).
+		X = 1 ;
+		X = 2.
+
+		?- 
+
+		15:58:21$ 
+
+4. Starting from cplint, make a version which extends it with CLP(FD):
+
+		15:58:21$ docker run -ti -v $PWD/data:/root/data cplint 
+		docker.cplint version 0.1 (cplint-2020.07.18-145623)
+		?- [library(clpfd)].
+		true.
+
+		?- X #< 10.
+		X in inf..9.
+
+		?- save(clpfd).
+		% Disabled autoloading (loaded 0 files)
+		saved docker.clpfd version 0.1 (clpfd-2020.07.18-145935)
+		true.
+
+		?- 
+
+		15:59:41$ 
+		15:59:43$ docker run -ti -v $PWD/data:/root/data cplint clpfd
+		docker.clpfd version 0.1 (clpfd-2020.07.18-145935)
+		?- X #> 8.
+		X in 9..sup.
+
+		?- 
+
+		15:59:54$ 
+
+
 # Notes
 
 At present, there is an unresolved interference between CPLINT and
