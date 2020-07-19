@@ -13,13 +13,13 @@ provide storage for persistent saved states.
 
 ## building the images
 
-Requirements: a Posix environment with Docker and Makefile.
+Requirements: a Posix environment with Docker.
 
 ### prolog, logtalk and cplint images
 
 Doing "make TARGET", where TARGET may be one of "prolog", "logtalk" or
 "cplint" will build a Docker image with the name of the target. The
-resulting will be based on a simple Debian (bullseye) image.
+resulting image will be based on a minimal Debian (bullseye) system.
 
 ### running the images
 
@@ -71,6 +71,9 @@ same name as previously used with save/1.
 
 # Example session
 
+These are run from a shell.  ^D is "Control-D" and stands for the
+end-of-file char.
+
 1. Make the cplint image:
 
 		15:52:37$ make cplint
@@ -98,7 +101,7 @@ same name as previously used with save/1.
 		?- [user].
 		|: p(1).
 		|: p(2).
-		|: 
+		|: ^D
 		% user://1 compiled 0.00 sec, 2 clauses
 		true.
 
@@ -111,7 +114,7 @@ same name as previously used with save/1.
 		saved docker.cplint version 0.1 (cplint-2020.07.18-145623)
 		true.
 
-		?- 
+		?- ^D
 
 		15:56:26$ 
 
@@ -123,7 +126,7 @@ same name as previously used with save/1.
 		X = 1 ;
 		X = 2.
 
-		?- 
+		?- ^D
 
 		15:58:21$ 
 
@@ -142,7 +145,7 @@ same name as previously used with save/1.
 		saved docker.clpfd version 0.1 (clpfd-2020.07.18-145935)
 		true.
 
-		?- 
+		?- ^D
 
 		15:59:41$ 
 		15:59:43$ docker run -ti -v $PWD/data:/root/data cplint clpfd
@@ -150,7 +153,7 @@ same name as previously used with save/1.
 		?- X #> 8.
 		X in 9..sup.
 
-		?- 
+		?- ^D
 
 		15:59:54$ 
 
